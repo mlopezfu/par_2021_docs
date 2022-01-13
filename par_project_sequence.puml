@@ -1,0 +1,27 @@
+@startuml
+actor client as cli
+participant capture_secuence as cs 
+participant robot as ro
+collections sensor_2d as sensors
+participant sensor_processing as sp
+participant intrinsic_calibration as ic
+participant extrinsic_calibration as ec
+== Initialization ==
+cli <--> cs: begin_capture_process
+cs->sp:new_cp_data
+== Capture ==
+loop x times
+cli->ro: move_robot
+cli-->cs: new_capture
+cs->sensors:capture
+sensors->sp:content
+end
+== Intrinsic Calibration ==
+cli->ic:calibrate
+ic-->sensors:setInfo
+== Extrinsic Calibration ==
+cli->ec:calibrate
+ec<-->sensors:getInfo
+ec->ro:urdf
+
+@enduml
