@@ -1,27 +1,27 @@
 @startuml
-actor client as cli
-participant capture_secuence as cs 
-participant robot as ro
-collections sensor_2d as sensors
-participant sensor_processing as sp
-participant intrinsic_calibration as ic
-participant extrinsic_calibration as ec
-== Initialization ==
-cli <--> cs: begin_capture_process
-cs->sp:new_cp_data
-== Capture ==
-loop x times
-cli->ro: move_robot
-cli-->cs: new_capture
-cs->sensors:capture
-sensors->sp:content
-end
-== Intrinsic Calibration ==
-cli->ic:calibrate
-ic-->sensors:setInfo
-== Extrinsic Calibration ==
-cli->ec:calibrate
-ec<-->sensors:getInfo
-ec->ro:urdf
+actor main as ma
+participant navigation as na
+participant pose as po
+collections manipulator as ro
+participant gripper as gr
+participant person as pe
 
+== Pose ==
+ma -> po: type
+ma <- po: count,pose
+== Navigation ==
+
+ma->na: goal
+ma<-na:ok
+
+== Manipulation & Gripping ==
+ma->ro:catchInPose
+ro->gr:open
+gr->ro:ok
+ro->gr:close
+gr->ro:ok
+gr->ma:ok
+== People search ==
+ma->pe:search
+ma->pe:ok
 @enduml
